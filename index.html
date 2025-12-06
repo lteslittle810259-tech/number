@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>100 以內數字卡</title>
+
+<style>
+    body {
+        font-family: "Noto Sans TC", sans-serif;
+        background: #f7faff;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+        color: #333;
+    }
+
+    h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    /* 控制區 */
+    .control-panel {
+        background: #fff7cc;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    input {
+        font-size: 28px;
+        width: 120px;
+        border-radius: 10px;
+        padding: 5px;
+        border: 2px solid #ccc;
+        text-align: center;
+        margin: 10px;
+    }
+
+    button {
+        font-size: 28px;
+        padding: 10px 20px;
+        border-radius: 15px;
+        border: none;
+        cursor: pointer;
+        margin: 10px;
+        transition: 0.2s;
+    }
+
+    button:active {
+        transform: scale(0.93);
+    }
+
+    #startBtn {
+        background: #7cd85a;
+        color: white;
+    }
+
+    .toggle-group {
+        font-size: 26px;
+        margin: 10px;
+    }
+
+    /* 數字卡 */
+    .card {
+        font-size: 120px;
+        width: 300px;
+        height: 300px;
+        margin: 20px auto;
+        background: white;
+        border-radius: 40px;
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: popIn 0.4s ease;
+    }
+
+    /* 出現彈跳動畫 */
+    @keyframes popIn {
+        0% {transform: scale(0.5); opacity: 0;}
+        50% {transform: scale(1.1);}
+        100% {transform: scale(1); opacity: 1;}
+    }
+
+    /* 左右切換按鈕 */
+    .nav-buttons {
+        margin-top: 20px;
+    }
+
+    .nav-btn {
+        background: #79b8f3;
+        color: white;
+    }
+
+    /* 🎉 過關動畫 */
+    #finishMessage {
+        font-size: 48px;
+        color: #ff6f61;
+        animation: bounce 1s infinite;
+        display: none;
+    }
+
+    @keyframes bounce {
+        0% { transform: translateY(0);}
+        50% { transform: translateY(-15px);}
+        100% { transform: translateY(0);}
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🎉 100 以內數字卡練習</h1>
+
+<div class="control-panel">
+    起始數：
+    <input type="number" id="startNum" min="0" max="100" value="0">
+    終點數：
+    <input type="number" id="endNum" min="0" max="100" value="20">
+
+    <div class="toggle-group">
+        <label><input type="radio" name="order" value="up" checked> 🔼 順著數</label>
+        <label><input type="radio" name="order" value="down"> 🔽 倒著數</label>
+    </div>
+
+    <button id="startBtn">▶️ 開始</button>
+</div>
+
+<!-- 數字卡顯示 -->
+<div id="card" class="card">0</div>
+
+<!-- 左右切換按鈕 -->
+<div class="nav-buttons">
+    <button class="nav-btn" id="prevBtn">⬅️ 上一張</button>
+    <button class="nav-btn" id="nextBtn">➡️ 下一張</button>
+</div>
+
+<!-- 過關提示 -->
+<div id="finishMessage">🎉 太棒了！你完成了！</div>
+
+
+<script>
+    let numbers = [];
+    let index = 0;
+
+    document.getElementById("startBtn").onclick = function () {
+        let start = parseInt(document.getElementById("startNum").value);
+        let end = parseInt(document.getElementById("endNum").value);
+        let order = document.querySelector("input[name='order']:checked").value;
+
+        if (start < 0 || end < 0 || start > 100 || end > 100) {
+            alert("請輸入 0～100 的數字!");
+            return;
+        }
+
+        // 順數 / 倒數
+        if (order === "up") {
+            numbers = [];
+            for (let i = start; i <= end; i++) numbers.push(i);
+        } else {
+            numbers = [];
+            for (let i = start; i >= end; i--) numbers.push(i);
+        }
+
+        index = 0;
+        showCard();
+    };
+
+    function showCard() {
+        const card = document.getElementById("card");
+        card.innerHTML = numbers[index];
+        card.style.animation = "none";
+        setTimeout(() => card.style.animation = "popIn 0.4s ease");
+
+        // 是否完成
+        if (index === numbers.length - 1) {
+            document.getElementById("finishMessage").style.display = "block";
+        } else {
+            document.getElementById("finishMessage").style.display = "none";
+        }
+    }
+
+    document.getElementById("prevBtn").onclick = function () {
+        if (index > 0) {
+            index--;
+            showCard();
+        }
+    };
+
+    document.getElementById("nextBtn").onclick = function () {
+        if (index < numbers.length - 1) {
+            index++;
+            showCard();
+        }
+    };
+</script>
+
+</body>
+</html>
